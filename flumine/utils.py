@@ -2,7 +2,6 @@ import re
 import uuid
 import json
 import logging
-import hashlib
 import datetime
 import functools
 from pathlib import Path
@@ -78,12 +77,12 @@ def chunks(l: list, n: int) -> list:
 
 
 def create_cheap_hash(txt: str, length: int = 15) -> str:
+    """Return a hex hash of the given length."""
     # This is just a hash for debugging purposes.
     #    It does not need to be unique, just fast and short.
-    # https://stackoverflow.com/questions/14023350
-    hash_ = hashlib.sha1()
-    hash_.update(txt.encode())
-    return hash_.hexdigest()[:length]
+    if length > 16:
+        raise ValueError(f'length is over 16: {length}')
+    return f'{hash(txt):016x}'[-length:]
 
 
 def as_dec(value):
